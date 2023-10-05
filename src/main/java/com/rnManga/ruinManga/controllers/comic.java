@@ -9,10 +9,10 @@ import com.rnManga.ruinManga.services.iComicService;
 @RestController
 @RequestMapping(path = "api/v1/comic")
 public class comic {
+
     @Autowired
     private iComicService comicService;
 
-    private final String url = "https://api.mangadex.org/manga";
     @GetMapping("/trending")
     public JsonNode getTrending() {
         JsonNode result = comicService.getTrendingListNode();
@@ -25,6 +25,16 @@ public class comic {
     @GetMapping(path = "/manga/{id}")
     public JsonNode getManga(@PathVariable("id") String id) {
         JsonNode result = comicService.getMangaNode(id);
+
+        if (result != null)
+            return result;
+        else
+            return null;
+    }
+
+    @GetMapping(path = "/manga")
+    public JsonNode getMangaList() {
+        JsonNode result = comicService.getMangaListNode();
 
         if (result != null)
             return result;

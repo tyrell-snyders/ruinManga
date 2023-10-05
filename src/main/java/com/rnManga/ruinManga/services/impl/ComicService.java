@@ -38,7 +38,7 @@ public class ComicService implements iComicService {
     public JsonNode getMangaNode(String id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        
+
         String mangaUrl = baseUrl + "/" + id + "/aggregate?";
         String[] translatedLanguage = {"en"};
 
@@ -54,7 +54,6 @@ public class ComicService implements iComicService {
             return responseEntity.getBody();
         else 
             return null;
-
     }
 
     @Override
@@ -81,6 +80,27 @@ public class ComicService implements iComicService {
             return null;
     }
 
+    @Override
+    public JsonNode getMangaListNode() {
+        String apiUrl = baseUrl + 
+            "?limit=30&includedTagsMode=AND&excludedTagsMode=OR&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[latestUploadedChapter]=desc";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
+            apiUrl,
+            HttpMethod.GET,
+            requestEntity,
+            JsonNode.class
+        );
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            return responseEntity.getBody();
+        } else {
+            return null;
+        }
+    }
 
 }
