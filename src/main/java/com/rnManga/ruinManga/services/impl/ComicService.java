@@ -35,9 +35,26 @@ public class ComicService implements iComicService {
     }
 
     @Override
-    public JsonNode getMangaNode() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getManga'");
+    public JsonNode getMangaNode(String id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        String mangaUrl = baseUrl + "/" + id + "/aggregate?";
+        String[] translatedLanguage = {"en"};
+
+        HttpEntity<String[]> requestEntity = new HttpEntity<>(translatedLanguage, headers);
+        ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
+            mangaUrl, 
+            HttpMethod.GET,
+            requestEntity,
+            JsonNode.class
+        );
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK)
+            return responseEntity.getBody();
+        else 
+            return null;
+
     }
 
     @Override
@@ -50,11 +67,11 @@ public class ComicService implements iComicService {
                     + "&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica"
                     + "&order[latestUploadedChapter]=desc";
 
-        HttpEntity<String> requesEntity = new HttpEntity<String>(headers);
+        HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
         ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
             searchUrl,
             HttpMethod.GET,
-            requesEntity,
+            requestEntity,
             JsonNode.class
         );
 
@@ -63,5 +80,7 @@ public class ComicService implements iComicService {
         else
             return null;
     }
+
+
 
 }

@@ -1,10 +1,8 @@
 package com.rnManga.ruinManga.controllers;
 
+//Imports
 import org.springframework.beans.factory.annotation.Autowired;
-// Imports
-import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rnManga.ruinManga.services.iComicService;
 
@@ -24,27 +22,14 @@ public class comic {
             return null;
     }
 
-    @GetMapping(path = "/manga")
-    public JsonNode getManga() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+    @GetMapping(path = "/manga/{id}")
+    public JsonNode getManga(@PathVariable("id") String id) {
+        JsonNode result = comicService.getMangaNode(id);
 
-        String[] contentRatings = {"safe", "suggestive"};
-
-        HttpEntity<String[]> requestEntity = new HttpEntity<>(contentRatings, headers);
-
-        ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
-            url, 
-            HttpMethod.GET,
-            requestEntity, 
-            JsonNode.class
-        );
-
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return responseEntity.getBody();
-        } else {
+        if (result != null)
+            return result;
+        else
             return null;
-        }
     }
 
     @GetMapping(path = "/search/{title}")
