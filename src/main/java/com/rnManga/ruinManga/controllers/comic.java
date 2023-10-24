@@ -4,7 +4,6 @@ package com.rnManga.ruinManga.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.rnManga.ruinManga.services.iChapterService;
 import com.rnManga.ruinManga.services.iComicService;
 
 @RestController
@@ -46,6 +45,16 @@ public class comic {
     @GetMapping("/search/{title}")
     public JsonNode searchManga(@PathVariable("title") String title) {
         JsonNode result = comicService.searchMangaNode(title);
+        if (result != null)
+            return result;
+        else
+            return null;
+    }
+
+    @GetMapping("/manga/coverArt/{coverId}")
+    public JsonNode getCover(@PathVariable("coverId") String coverId) {
+        JsonNode result = comicService.getCoverArtNode(coverId);
+
         if (result != null)
             return result;
         else

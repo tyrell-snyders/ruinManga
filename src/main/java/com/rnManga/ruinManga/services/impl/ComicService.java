@@ -1,106 +1,69 @@
 package com.rnManga.ruinManga.services.impl;
 
-//imports
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rnManga.ruinManga.services.iComicService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class ComicService implements iComicService {
-    private final String baseUrl = "https://api.mangadex.org/manga";
+    private static final String BASE_URL = "https://api.mangadex.org/manga";
+    private static final String COVER_URL = "https://api.mangadex.org/cover";
+    private static final Logger logger = LoggerFactory.getLogger(ComicService.class);
 
-    @Override
-    public JsonNode getTrendingListNode() {
+    private JsonNode makeRequest(String url, HttpMethod method, Object requestObject) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String[] contentRatings = {"safe", "suggestive"};
+        HttpEntity<Object> requestEntity = new HttpEntity<>(requestObject, headers);
 
-        HttpEntity<String[]> requestEntity = new HttpEntity<>(contentRatings, headers);
-
-        ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
-            baseUrl,
-            HttpMethod.GET,
-            requestEntity,
-            JsonNode.class
-        );
-
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return responseEntity.getBody();
-        } else {
-            return null; 
+        try {
+            ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(url, method, requestEntity, JsonNode.class);
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                return responseEntity.getBody();
+            }
+        } catch (Exception e) {
+            logger.error("An error occurred: " + e.getMessage());
         }
+        return null;
+    }
+
+    @Override
+    public JsonNode getTrendingListNode() {
+        String[] contentRatings = {"safe", "suggestive"};
+        String url = BASE_URL;
+        return makeRequest(url, HttpMethod.GET, contentRatings);
     }
 
     @Override
     public JsonNode getMangaNode(String id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String mangaUrl = baseUrl + "/" + id + "/aggregate?";
+        String url = BASE_URL + "/" + id + "/aggregate?";
         String[] translatedLanguage = {"en"};
-
-        HttpEntity<String[]> requestEntity = new HttpEntity<>(translatedLanguage, headers);
-        ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
-            mangaUrl, 
-            HttpMethod.GET,
-            requestEntity,
-            JsonNode.class
-        );
-
-        if (responseEntity.getStatusCode() == HttpStatus.OK)
-            return responseEntity.getBody();
-        else 
-            return null;
+        return makeRequest(url, HttpMethod.GET, translatedLanguage);
     }
 
     @Override
     public JsonNode searchMangaNode(String title) {
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String searchUrl = baseUrl + "?title=" + title 
-                    + "&includedTagsMode=AND&excludedTagsMode=OR"
-                    + "&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica"
-                    + "&order[latestUploadedChapter]=desc";
-
-        HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
-        ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
-            searchUrl,
-            HttpMethod.GET,
-            requestEntity,
-            JsonNode.class
-        );
-
-        if (responseEntity.getStatusCode() == HttpStatus.OK)
-            return responseEntity.getBody();
-        else
-            return null;
+        String url = BASE_URL + "?title=" + title
+                + "&includedTagsMode=AND&excludedTagsMode=OR"
+                + "&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica"
+                + "&order[latestUploadedChapter]=desc";
+        return makeRequest(url, HttpMethod.GET, null);
     }
 
     @Override
     public JsonNode getMangaListNode() {
-        String apiUrl = baseUrl + 
-            "?limit=30&includedTagsMode=AND&excludedTagsMode=OR&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[latestUploadedChapter]=desc";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-
-        ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
-            apiUrl,
-            HttpMethod.GET,
-            requestEntity,
-            JsonNode.class
-        );
-
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return responseEntity.getBody();
-        } else {
-            return null;
-        }
+        String url = BASE_URL + "?limit=30&includedTagsMode=AND&excludedTagsMode=OR" +
+                "&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[latestUploadedChapter]=desc";
+        return makeRequest(url, HttpMethod.GET, null);
     }
 
+    @Override
+    public JsonNode getCoverArtNode(String id) {
+        String url = COVER_URL + "/" + id + "?includes%5B%5D=manga";
+        return makeRequest(url, HttpMethod.GET, null);
+    }
 }

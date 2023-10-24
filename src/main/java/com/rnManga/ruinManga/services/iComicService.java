@@ -8,4 +8,5 @@ public interface iComicService {
     JsonNode getMangaNode(String id);
     JsonNode searchMangaNode(String title);
     JsonNode getMangaListNode();
+    JsonNode getCoverArtNode(String id);
 }
