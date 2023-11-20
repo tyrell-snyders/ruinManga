@@ -1,5 +1,6 @@
 package com.rnManga.ruinManga.services.impl;
 
+//Imports
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rnManga.ruinManga.services.iComicService;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class ComicService implements iComicService {
 
     @Override
     public JsonNode getMangaNode(String id) {
-        String url = BASE_URL + "/" + id + "/aggregate?";
+        String url = BASE_URL + "/" + id;
         String[] translatedLanguage = {"en"};
         return makeRequest(url, HttpMethod.GET, translatedLanguage);
     }
@@ -64,6 +65,12 @@ public class ComicService implements iComicService {
     @Override
     public JsonNode getCoverArtNode(String id) {
         String url = COVER_URL + "/" + id + "?includes%5B%5D=manga";
+        return makeRequest(url, HttpMethod.GET, null);
+    }
+
+    @Override
+    public JsonNode getMangaVolumesNode(String id) {
+        String url = BASE_URL + "/" + id + "/aggregate";
         return makeRequest(url, HttpMethod.GET, null);
     }
 }

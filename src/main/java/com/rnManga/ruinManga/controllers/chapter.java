@@ -23,4 +23,13 @@ public class chapter {
         else
             return null;
     }
+
+    @GetMapping("/chapters/{mangaID}")
+    public JsonNode getChapters(@PathVariable("mangaID") String mangaID) {
+        JsonNode result = chapterService.getMangaVolumesNode(mangaID);
+        if (result != null)
+            return result;
+        else
+            return null;
+    }
 }
