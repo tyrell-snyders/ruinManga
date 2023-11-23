@@ -34,7 +34,6 @@ public class ChapterService implements iChapterService {
         return null;
     }
 
-
     @Override
     public JsonNode getChapterNode(String id) {
         String chapterUrl = baseUrl + id;
@@ -61,5 +60,6 @@ public class ChapterService implements iChapterService {
         String url = mangaURL + "/" + id + "/aggregate";
         return makeRequest(url, HttpMethod.GET, null);
     }
-    
+
+
 }
