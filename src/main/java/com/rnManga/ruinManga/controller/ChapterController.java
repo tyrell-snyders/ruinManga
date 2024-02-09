@@ -1,5 +1,8 @@
 package com.rnManga.ruinManga.controller;
 
+import java.util.List;
+import java.util.Map;
+
 //Imports
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +21,15 @@ public class ChapterController {
     @GetMapping("/chapter/{chapterID}")
     public JsonNode getChapter(@PathVariable("chapterID") String chapterID) {
         JsonNode result = chapterService.getChapterNode(chapterID);
+        if (result != null)
+            return result;
+        else
+            return null;
+    }
+
+    @GetMapping("/chapter/pages/{chapterID}")
+    public Object getPages(@PathVariable("chapterID") String chapterID) {
+        Object result = chapterService.getPagesNode(chapterID);
         if (result != null)
             return result;
         else
