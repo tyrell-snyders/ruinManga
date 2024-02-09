@@ -1,4 +1,4 @@
-package com.rnManga.ruinManga.controllers;
+package com.rnManga.ruinManga.controller;
 
 //Imports
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import com.rnManga.ruinManga.services.iChapterService;
 
 @RestController
 @RequestMapping("api/v1/manga")
-public class chapter {
+public class ChapterController {
     @Autowired
     private iChapterService chapterService;
 

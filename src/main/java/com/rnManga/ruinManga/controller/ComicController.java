@@ -1,4 +1,4 @@
-package com.rnManga.ruinManga.controllers;
+package com.rnManga.ruinManga.controller;
 
 //Imports
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +8,9 @@ import com.rnManga.ruinManga.services.iComicService;
 
 @RestController
 @RequestMapping(path = "api/v1/comic")
-public class comic {
+public class ComicController {
 
-    @Autowired
-    private iComicService comicService;
+    @Autowired private iComicService comicService;
 
     @GetMapping("/trending")
     public JsonNode getTrending() {
