@@ -1,8 +1,5 @@
 package com.rnManga.ruinManga.controller;
 
-import java.util.List;
-import java.util.Map;
-
 //Imports
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
