@@ -2,6 +2,9 @@ package com.rnManga.ruinManga.services.impl;
 
 //imports
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +30,8 @@ public class ChapterService implements iChapterService {
         HttpEntity<Object> requestEntity = new HttpEntity<>(requestObject, headers);
 
         try {
-            ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(url, method, requestEntity, JsonNode.class);
+            ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(url, method, requestEntity,
+                    JsonNode.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 return responseEntity.getBody();
             }
@@ -46,15 +50,14 @@ public class ChapterService implements iChapterService {
 
         HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
         ResponseEntity<JsonNode> responseEntity = new RestTemplate().exchange(
-            chapterUrl,
-            HttpMethod.GET,
-            requestEntity,
-            JsonNode.class
-        );
+                chapterUrl,
+                HttpMethod.GET,
+                requestEntity,
+                JsonNode.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK)
             return responseEntity.getBody();
-        else 
+        else
             return null;
     }
 
@@ -64,19 +67,28 @@ public class ChapterService implements iChapterService {
         return makeRequest(url, HttpMethod.GET, null);
     }
 
-    //Get the chapter pages
+    // Get the chapter pages
     public Object getPagesNode(String id) {
         String chapterUrl = chapUrl + id;
         JsonNode chapterNode = makeRequest(chapterUrl, HttpMethod.GET, null);
-        if (chapterNode == null) return null;
+        if (chapterNode == null)
+            return null;
 
         JsonNode chapter = chapterNode.get("chapter");
-        if (chapter == null) return null;
+        if (chapter == null)
+            return null;
 
         PageHandling pageHandling = new PageHandling(chapter);
 
         Object result = pageHandling.getChapters();
 
         return result;
+    }
+
+    @Override
+    public JsonNode getChaptersFeedNode(String id, Integer volume) {
+        String chaptersUrl  = baseUrl + "?limit=99&manga=" + id + "&volume[]=" + volume + "&translatedLanguage[]=en";
+
+        return makeRequest(chaptersUrl, HttpMethod.GET, null);
     }
 }

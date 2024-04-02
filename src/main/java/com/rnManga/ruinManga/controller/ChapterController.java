@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rnManga.ruinManga.services.iChapterService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("api/v1/manga")
@@ -41,4 +43,14 @@ public class ChapterController {
         else
             return null;
     }
+
+    @GetMapping("/chapters/feed/{mangaID}")
+    public JsonNode getChaptersFeed(@PathVariable("mangaID") String mangaID, Integer volume) {
+        JsonNode result = chapterService.getChaptersFeedNode(mangaID, volume);
+        if (result != null)
+            return result;
+        else
+            return null;
+    }
+    
 }

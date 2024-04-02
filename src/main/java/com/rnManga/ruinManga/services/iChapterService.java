@@ -6,4 +6,5 @@ public interface iChapterService {
     JsonNode getChapterNode(String id);
     JsonNode getMangaVolumesNode(String id);
     Object getPagesNode(String id);
+    JsonNode getChaptersFeedNode(String id, Integer volume);
 }
